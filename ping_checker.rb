@@ -22,6 +22,19 @@ class MetasploitModule < Msf::Auxiliary #crea una nuova classe con le caratteris
   def ping_host(ip) #metodo che prende in input il ping
     count   = datastore['COUNT']
     timeout = datastore['TIMEOUT']
+
+    #così da prendere anche un url
+    require 'resolv'
+    begin
+      resolved_ip = Resolv.getaddress(ip)
+    if resolved_ip != ip
+      print_status("#{ip} trovato #{resolved_ip}")
+    end
+      ip = resolved_ip
+    rescue Resolv::ResolvError
+    print_error("Impossibile trovare il dominio: #{ip}")
+    return { reachable: false, latency: nil, raw: '' }
+  end
   
     #runna il comando e poi vede il match per Windows o Linux/MacOS
     cmd = if RUBY_PLATFORM =~ /mingw|mswin/ #per verificare il SO utilizzato
