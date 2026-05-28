@@ -1,0 +1,1 @@
+Moduli ausiliari per Metasploit.
